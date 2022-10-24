@@ -71,7 +71,7 @@ router.get("/countries",async(req,res)=>{
                         }
                     }
                 },
-                attributes: ["name","id"]
+                attributes: ["name","id","img","continente","poblacion"]
 
             })
             if(!pais.length){
@@ -81,7 +81,7 @@ router.get("/countries",async(req,res)=>{
             res.status(200).send(pais)
         }else{
             const paises = await Country.findAll({
-                attributes: ["name","id"]
+                attributes: ["name","img","continente","id","poblacion"]
             })
             res.status(200).send(paises)
         }
