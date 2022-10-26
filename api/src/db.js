@@ -32,7 +32,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 // Para relacionarlos hacemos un destructuring
 
 const { Country, Activity } = sequelize.models;
-console.log(sequelize.models)
+
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
 
