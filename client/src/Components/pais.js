@@ -1,13 +1,23 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {getDetail, clean} from "../redux/actions"
 
+import "./css/pais.css"
+import img from "./css/img/Pais_img/globe-g4443be85d_1280.jpg"
+
+
+
 const pais = (props)=>{
 
+    // Variables y hooks ///////////////////////////////////
 
     const paisId = props.match.params.id;
     const dispatch = useDispatch();
     const paisDetalle = useSelector((state)=>state.search)
+
+    ////////////////////////////////////////////////////////
+
+    // Ciclo de vida ///////////////////////////////////////
 
     useEffect(()=>{
         dispatch(getDetail(paisId))
@@ -17,7 +27,9 @@ const pais = (props)=>{
 
     },[dispatch])
 
-    // console.log("detalle: ",paisDetalle)
+    ////////////////////////////////////////////////////////
+
+    // Renderizado /////////////////////////////////////////
 
     if(!paisDetalle.length){
         return(
@@ -27,17 +39,24 @@ const pais = (props)=>{
         )
     }else{
         return(
-            <div>
-                <h2>PAIS</h2>
-                <h1>Nombre: {paisDetalle[0].name}</h1>
-                <h2>ID: {paisDetalle[0].id}</h2>
+            <div className="contenedorPaisId">
+
+                {/* ////////////////// Imagen Fondo //////////////////// */}
+                <img src={img} className="imgFondoPais" />
+                {/* ////////////////// Imagen Fondo //////////////////// */}
+
+                {/* ////////////////// Propiedades Pais //////////////////// */}
+                <h1> {paisDetalle[0].name}</h1>
+                <br/>
                 <img src={paisDetalle[0].img}></img>
+                <h4>ID: {paisDetalle[0].id}</h4>
                 <h4>Continente: {paisDetalle[0].continente}</h4>
                 <h4>Subregion: {paisDetalle[0].subregion}</h4>
                 <h4>Capital: {paisDetalle[0].capital}</h4>
                 <h4>Área: {paisDetalle[0].area} km2</h4>
                 <h4>Población: {paisDetalle[0].poblacion}</h4>
-                
+                <br/>
+                {/* ////////////////// Propiedades Pais Actividades //////////////////// */}
                 {paisDetalle[0].Activities.length?
                 (<h4>Actividades: {paisDetalle[0].Activities.map((actividad)=>{
                 return(
@@ -55,11 +74,15 @@ const pais = (props)=>{
                    
                 )}
                 </h4>):(<h4>Actividades: sin actividades</h4>)}
-                
+                {/* ////////////////// Propiedades Pais Actividades //////////////////// */}
+
+                {/* ////////////////// Propiedades Pais //////////////////// */}
                 
             </div>
         )
     };
+
+    ////////////////////////////////////////////////////////
 
 }
 

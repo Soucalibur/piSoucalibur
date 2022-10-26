@@ -1,106 +1,125 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {getCountries, searchCountry} from "../redux/actions"
 
+import img from "./css/img/Home_img/Continente.jpg"
 import "./css/home.css"
-//AGREGAR UN MENSAJE DE ERROR CUANDO NO ENCUENTRE UN PAIS DETERMINADO
+
+
+
 const home = (props)=>{
+
+    // Hooks ///////////////////////////////////////////////////
 
     const dispatch = useDispatch();
     const paises = useSelector((state)=>state.country)
-    // si no tengo nada en el buscador => busca todos los paises, sino busca solo el pais encontrado
-    // tengo que hacer un estado local y este debe relacionarse con el globlal para buscar informacion
 
-    const [input,setInput]=useState("")
-    const [filtro,setFiltro] = useState("")
-    const [valor,setValor] = useState({
-        valor1:0,
-        valor2:9,
+    ////////////////////////////////////////////////////////////
+    
+    // Estados locales /////////////////////////////////////////
+
+    const [input,setInput]=useState("")         // Para el buscador
+    const [filtro,setFiltro] = useState("")     // Para el filtro
+    const [valor,setValor] = useState({         // Para el paginado (elementos visualizados)
+        primerElemento:0,
+        ultimoElemento:9,
     })
-    const [pagActual,setPagActual] = useState(1)
+    const [pagActual,setPagActual] = useState(1)// Para el paginado (numero pagina actual)
     
+    ////////////////////////////////////////////////////////////
 
-    //hacer otro estado, un filter,setFilter para poder cambiar las opciones del mapeo de los paises traidos
-    // entonces dependiendo del valor que el filter posea es como se ordenarán los paises traidos
-    // crear los botones que me permitan cambiar este nombre al hacerles click
-    // poner en el array de dependencias el estado filter para que cuando cambie se pueda hacer useEffect
+    // Ciclo de vida ///////////////////////////////////////////
 
-    
     useEffect( ()=>{
-        if(input){
-            dispatch(searchCountry(input))
-        }
-        else{
-            dispatch(getCountries())
-        }
+        dispatch(getCountries())
         
-        
-    },[dispatch,input,filtro]) //agregar el estado filter
-    
-    const buscar= async(event)=>{
+    },[dispatch])
+
+    ////////////////////////////////////////////////////////////
+
+    // Búsqueda ////////////////////////////////////////////////
+
+    const buscar= (event)=>{
         event.preventDefault();
-        // console.log(event.target.buscando.value)
-        await setInput(event.target.buscando.value)
-        await setPagActual(1);
-        await setValor({
-            valor1:0,
-            valor2:9
+        
+        dispatch(searchCountry(input))
+        setInput("")
+        setPagActual(1);
+        setValor({
+            primerElemento:0,
+            ultimoElemento:9
         })
-        
-        
+   
     }
 
-    const filtrarPoblacionMenor = async(event)=>{
-        event.preventDefault();
-        await setFiltro("menorPoblacion")
+    const cambiarInput = (event)=>{
+        event.preventDefault()
+        setInput(event.target.value)
     }
-    const filtrarPoblacionMayor = async(event)=>{
+
+    ////////////////////////////////////////////////////////////
+
+    // Filtros /////////////////////////////////////////////////
+
+    const filtrarPoblacionMenor = (event)=>{
         event.preventDefault();
-        await setFiltro("mayorPoblacion")
+        setFiltro("menorPoblacion")
     }
-    const filtrarInverso = async(event)=>{
+    const filtrarPoblacionMayor = (event)=>{
         event.preventDefault();
-        await setFiltro("inverso")
+        setFiltro("mayorPoblacion")
     }
-    const filtrarAlfabetico= async(event)=>{
+    const filtrarInverso = (event)=>{
         event.preventDefault();
-        await setFiltro("alfabetico")
+        setFiltro("inverso")
     }
-    const filtrarContinente = async(event)=>{
+    const filtrarAlfabetico= (event)=>{
         event.preventDefault();
-        await setFiltro("continente")
+        setFiltro("alfabetico")
     }
-    const nextPage = async(event)=>{
+    const filtrarContinente = (event)=>{
         event.preventDefault();
-        // console.log("long: ",paises.length)
-        
-        
-        // console.log("valor pagina actual: ",pagActual)
-        if(valor.valor2 < paises.length){
-            await setValor({valor1:valor.valor1+9, valor2:valor.valor2+9})
-            await setPagActual(pagActual +1)
-        }
-        if(paises.length<10){
-            await setValor({valor1:0, valor2:9})
-        }
-        
+        setFiltro("continente")
     }
-    const prevPage = async(event)=>{
-        event.preventDefault();
-        // console.log("valor pagina actual: ",pagActual)
-        if(valor.valor1 !== 0){
-            await setValor({valor1:valor.valor1-9, valor2:valor.valor2-9})
-            await pagActual>0 && setPagActual(pagActual -1)
-        }
-        if(paises.length<10){
-            await setValor({valor1:0, valor2:9})
-        }
-        
-    }
+    ////////////////////////////////////////////////////////////
     
+    // Paginado ////////////////////////////////////////////////
 
-    if(!paises){
+    const nextPage = (event)=>{
+        event.preventDefault();
+        
+        if(valor.ultimoElemento < paises.length && pagActual === 1){
+            setValor({primerElemento:valor.primerElemento+9, ultimoElemento:valor.ultimoElemento+10})
+            setPagActual(pagActual +1) 
+        }
+
+        if(valor.ultimoElemento < paises.length && pagActual !== 1){
+            setValor({primerElemento:valor.primerElemento+10, ultimoElemento:valor.ultimoElemento+10})
+            setPagActual(pagActual +1) 
+        }
+        
+    }
+
+    const prevPage = (event)=>{
+        event.preventDefault();
+        
+        if(valor.primerElemento !== 0 && pagActual === 2){
+            setValor({primerElemento:valor.primerElemento-9, ultimoElemento:valor.ultimoElemento-10})
+            pagActual>0 && setPagActual(pagActual -1)
+        }
+
+        if(valor.primerElemento !== 0 && pagActual > 2 ){
+            setValor({primerElemento:valor.primerElemento-10, ultimoElemento:valor.ultimoElemento-10})
+            pagActual>0 && setPagActual(pagActual -1) 
+        }
+    
+    }
+    ///////////////////////////////////////////////////////////
+    
+    // Renderizado ////////////////////////////////////////////
+
+    if(!paises.length){
         return(
         <div>
             <p>CARGANDOOOOOOOO...</p>
@@ -110,62 +129,69 @@ const home = (props)=>{
     }else{
         return (
             <div className="contenedorGrid">
-                <div>
-                    <form onSubmit={(e)=>buscar(e)}> 
-                            <label>Navegador </label>
-                            <input placeholder="pais" name="buscando" autoComplete="off"></input>
-                            <button type="submit">Search</button>
-                    </form>
-                </div>
-                <div>
-                    <form onSubmit={(e)=>filtrarPoblacionMenor(e)}>
-                        <button type="submit">Menor Población</button>
-                    </form>
-                </div>
-                <div>
-                    <form onSubmit={(e)=>filtrarPoblacionMayor(e)}>
-                        <button type="submit">Mayor Población</button>
-                    </form>
-                </div>
-                <div>
-                    <form onSubmit={(e)=>filtrarInverso(e)}>
-                        <button type="submit">Alfabético Inverso</button>
-                    </form>
-                </div>
-                <div>
-                    <form onSubmit={(e)=>filtrarAlfabetico(e)}>
-                        <button type="submit">Alfabético</button>
-                    </form>
-                </div>
-                <div>
-                    <form onSubmit={(e)=>filtrarContinente(e)}>
-                        <button type="submit">Continente</button>
-                    </form>
-                </div>
+                
+                <div className="contenedorFiltros">
+                    
+                    {/* ///////////////// Busqueda //////////////////////// */}
+                    <div id="navegador">
+                        <form onSubmit={(e)=>buscar(e)}> 
+                                
+                                <input placeholder="Buscar país..." autoComplete="off" value={input} onChange={cambiarInput} id="input"></input>
+                                <button type="submit" className="boton">Search</button>
+                                
+                        </form>
+                    </div>
+                    {/* ///////////////// Busqueda //////////////////////// */}
 
-                <div>
-                    <form onSubmit={(e)=>prevPage(e)}>
-                        <button type="submit">PREV</button>
-                    </form>
+                    {/* ///////////////// Filtros ///////////////////////// */}
+                    <div id="filtros">
+
+                        <form onSubmit={(e)=>filtrarPoblacionMenor(e)}>
+                            <button type="submit" className="boton">Menor Población</button>
+                        </form>
+                    
+                        <form onSubmit={(e)=>filtrarPoblacionMayor(e)}>
+                            <button type="submit" className="boton">Mayor Población</button>
+                        </form>
+                    
+                        <form onSubmit={(e)=>filtrarInverso(e)}>
+                            <button type="submit" className="boton">Alfabético Inverso</button>
+                        </form>
+                    
+                        <form onSubmit={(e)=>filtrarAlfabetico(e)}>
+                            <button type="submit" className="boton">Alfabético</button>
+                        </form>
+                    
+                    
+                        <form onSubmit={(e)=>filtrarContinente(e)}>
+                            <button type="submit" className="boton">Continente</button>
+                        </form>
+
+                    </div>
+                    {/* ///////////////// Filtros ///////////////////////// */}
+
                 </div>
                 
-                <div>
-                    {pagActual}
-                </div>
-
-                <div>
-                    <form onSubmit={(e)=>nextPage(e)}>
-                        <button type="submit">NEXT</button>
-                    </form>
-                </div>
-                
-
+                    {/* ///////////////// Paginado //////////////////////// */}
+                    <div className="contenedorPaginado">
+                        <form onSubmit={(e)=>prevPage(e)}>
+                            <button type="submit" className="boton">PREV</button>
+                        </form>
+                    
+                        {pagActual}
+                    
+                        <form onSubmit={(e)=>nextPage(e)}>
+                            <button type="submit" className="boton">NEXT</button>
+                        </form>
+                    </div>
+                    {/* ///////////////// Paginado //////////////////////// */}
                 
 
 
                 <div className="contenedor">
                     
-                    {paises.sort((a,b)=>{
+                    {/* ///////////////// Paises ////////////////////////// */}
+                    {Array.isArray(paises)? paises.sort((a,b)=>{
                         if(filtro === "menorPoblacion"){
                             if(a.poblacion > b.poblacion){
                                 return 1;
@@ -209,21 +235,34 @@ const home = (props)=>{
                         };
 
                        
-                    }).slice(valor.valor1,valor.valor2).map((pais)=>{
+                    }).slice(valor.primerElemento,valor.ultimoElemento).map((pais)=>{
                      return(
                         
                         <div className="contenedorPais" key={pais.id}>
-                            <Link to={`/pais/${pais.id}`} >
-                                <h3>{pais.name}</h3>
-                            </Link>
-                            <img src={pais.img} className="imagen"></img>
-                            <p>{pais.continente}</p>
-                        </div>
-                     )
-                     
-                    }
-                    )}
+                            <div className="nombrePais">
+                            
+                                <Link to={`/home/pais/${pais.id}`} >
+                                    <h3>{pais.name}</h3>
+                                </Link>
+                                
+                            </div>
+
+                            <img src={pais.img} className="imagenPais"></img>
+
+                            <p className="continentePais">{pais.continente}</p>
+                            
+                        </div>  
+
+                     )}) : <p>No se encontró el país buscado</p>
+                
+                }
+                    {/* ///////////////// Paises ////////////////////////// */}
+                    
                 </div>
+
+                {/* ///////////////////// Imagen Fondo //////////////////// */}
+                <img src={img} alt="fondo" className="img" />
+                {/* ///////////////////// Imagen Fondo //////////////////// */}
                 
             </div>
         )
@@ -232,5 +271,6 @@ const home = (props)=>{
     
 }
 
+    ////////////////////////////////////////////////////////////
 
 export default home;

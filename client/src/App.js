@@ -10,12 +10,13 @@ import { Route } from "react-router-dom";
 function App() {
   return (
     <div className="App">
-      <h1>Henry Countries</h1>
-      <Route path="/home" component={nav} className="navPosition" />
-      <Route exact path= "/home" component= {home} className="homePosition"/>
+      
+      
+      <Route path="/home" component={nav} />
+      <Route exact path= "/home" component= {home} />
       <Route exact path="/" component={intro}  />
       
-      <Route path="/pais/:id" component={pais} className="paisPosition"/>
+      <Route path="/home/pais/:id" component={pais} />
       <Route path="/home/createActivity" component={activity} />
       <Route exact path="/enviado" component={enviado}/>
       

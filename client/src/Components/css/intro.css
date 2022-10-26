@@ -1,0 +1,57 @@
+.contenedorIntro{
+    display: grid;
+    grid-template-columns: repeat(12,1fr);
+    grid-auto-rows: 4vh;
+}
+
+#titulo{
+    
+    grid-column: 1/13;
+    grid-row: 8/10;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+/* a:link,a:visited{
+    background-color: #77b1d3da;
+    color: white;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 20px;
+} */
+a{
+    background-color: #8ad3fdda;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+a:hover{
+    background-color: rgb(35, 112, 228);
+    transition: 250ms;
+}
+
+#link{
+    
+    grid-column: 6/8;
+    grid-row: 10/12;
+    align-self: center;
+    
+    
+}
+
+#img{
+    background-image: url("./img/Intro_img/Globo_Terraqueo.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    grid-column: 1/13;
+    grid-row: 1/26;
+    z-index: -1;
+    background-position: center;
+    
+}

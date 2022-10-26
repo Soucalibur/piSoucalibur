@@ -1,3 +1,51 @@
-.hide{
+
+.contenedorActividad{
+    display: grid;
+    grid-template-columns: repeat(12,1fr);
+    grid-auto-rows: 30px;
+}
+
+.imgAct{
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position:fixed;
+    top: 0
+   
+}
+
+.contenedorForm{
+    grid-column: 4/13;
     
+    padding-top: 20px;
+    margin-left: 40px;
+    align-self: center;
+    grid-row: 5/17;
+
+    background: radial-gradient(circle, rgba(83,195,224,0.8687850140056023) 26%, rgba(102,212,235,0.7707457983193278) 52%, rgba(170,243,245,0.34217436974789917) 82%);
+
+    width: 50%;
+    height: 100%;
+    border-radius: 30px;
+}
+
+.botonActividad{
+    background-color: #077ec4da;
+    color: white;
+    padding: 5px 15px;
+    margin: 5px;
+    width: 17%;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.input{
+    background-color: rgb(131, 199, 255);
+    border-radius: 5px;
+    height: 30px;
+    font-size: 14px;
 }

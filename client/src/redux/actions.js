@@ -3,6 +3,9 @@ export const SEARCH_COUNTRY = "SEARCH_COUNTRY"
 export const GET_DETAIL = "GET_DETAIL"
 export const CLEAN = "CLEAN"
 export const SEND_DATA = "SEND_DATA"
+export const ERROR = "ERROR"
+
+// Traer todos los paises //////////////////////////////////////
 
 export const getCountries = ()=>{
     return function(dispatch){
@@ -12,13 +15,22 @@ export const getCountries = ()=>{
     }
 }
 
+////////////////////////////////////////////////////////////////
+
+// Traer paises por nombre /////////////////////////////////////
+
 export const searchCountry = (name)=>{
     return function(dispatch){
         fetch(`http://localhost:3001/countries?name=${name}`)
         .then((response)=>response.json())
         .then((data)=> dispatch({type:SEARCH_COUNTRY,payload:data}))
+        .catch((data)=>dispatch({type: ERROR, payload:data}))
     }
 }
+
+////////////////////////////////////////////////////////////////
+
+// Traer datos de pais por ID //////////////////////////////////
 
 export const getDetail = (id)=>{
     return function(dispatch){
@@ -27,6 +39,10 @@ export const getDetail = (id)=>{
         .then((data)=> dispatch({type:GET_DETAIL, payload:data}))
     }
 }
+
+////////////////////////////////////////////////////////////////
+
+// Crear actividad /////////////////////////////////////////////
 
 export const sendData = (inf)=>{
     return function(dispatch){
@@ -39,28 +55,18 @@ export const sendData = (inf)=>{
         })
         .then((response)=>response.json())
         .then((data)=>dispatch({type:SEND_DATA,payload:"datos enviados"}))
+        .catch((data)=> dispatch({type:SEND_DATA, payload: "datos no enviados"}))
     }
 }
-// fetch('https://example.com/profile', {
-//   method: 'POST', // or 'PUT'
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-//   body: JSON.stringify(data),
-// })
-//   .then((response) => response.json())
-//   .then((data) => {
-//     console.log('Success:', data);
-//   })
-//   .catch((error) => {
-//     console.error('Error:', error);
-//   });
 
+////////////////////////////////////////////////////////////////
 
-
+// Limpiar registro de pais buscado ////////////////////////////
 
 export const clean = ()=>{
     return function(dispatch){ 
         dispatch({type:CLEAN})
     }
 }
+
+////////////////////////////////////////////////////////////////
