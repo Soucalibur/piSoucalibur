@@ -6,11 +6,12 @@ const Op = Sequelize.Op;
 
 
 const router = Router();
-const {Country, Activity ,CountryActivity} = require("../db")
+const {Country, Activity} = require("../db")
 
 
 router.get("/countries",async(req,res)=>{
-    const {name} = req.query
+    const {name, continente, actividad} = req.query
+    
     try {
         
         const comprobacionPaises = await Country.findAll()
@@ -57,17 +58,83 @@ router.get("/countries",async(req,res)=>{
                         }
                     }
                 },
-                attributes: ["name","id","img","continente","poblacion"]
+                attributes: ["name","id","img","continente","poblacion"],
+                include: [{
+                    model: Activity,
+                    attributes: ["name","id","dificult","duration","season"],
+                    through:{
+                        attributes:["CountryId","ActivityId"]
+                    }
+
+                }]
 
             })
+            
             if(!pais.length){
                 throw new Error("No existe el país buscado")
             }
+            else{
+                res.status(200).send(pais)
+            }
     
-            res.status(200).send(pais)
-        }else{
+            
+        }
+        
+        else if(continente){
+            const paisContinente = await Country.findAll({
+                where: {continente},
+                attributes: ["name","id","img","continente","poblacion"],
+                include: [{
+                    model: Activity,
+                    attributes: ["name","id","dificult","duration","season"],
+                    through:{
+                        attributes:["CountryId","ActivityId"]
+                    }
+
+                }]
+            })
+            
+            if(!paisContinente.length){
+                throw new Error("No hay paises en el continente buscado")
+            }
+            
+            res.status(200).send(paisContinente)
+        
+        }
+
+        else if(actividad){
+            const actividadPais = await Country.findAll({
+                attributes: ["name","id","img","continente","poblacion"],
+                include:[{
+                    model: Activity,
+                    where: {name:actividad},
+                    attributes: ["name","id","dificult","duration","season"],
+                    through:{
+                        attributes:["CountryId","ActivityId"]
+                    }
+                }]
+
+            })
+
+            if(!actividadPais.length){
+                throw new Error("No existe actividad")
+            }
+
+            res.status(200).send(actividadPais)
+
+        }
+        
+        else{
             const paises = await Country.findAll({
-                attributes: ["name","img","continente","id","poblacion"]
+                attributes: ["name","img","continente","id","poblacion"],
+                include: [{
+                    model: Activity,
+                    attributes: ["name","id","dificult","duration","season"],
+                    through:{
+                        attributes:["CountryId","ActivityId"]
+                    }
+
+                }]
             })
             res.status(200).send(paises)
         }
@@ -103,6 +170,7 @@ router.get("/countries/:id",async(req,res)=>{
         res.status(400).send(error.message)
     }
 })
+
 
 router.post("/activities",async(req,res)=>{
     try {
