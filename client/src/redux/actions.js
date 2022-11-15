@@ -30,6 +30,24 @@ export const searchCountry = (name)=>{
 
 ////////////////////////////////////////////////////////////////
 
+export const searchCountryByContinent = (continente)=>{
+    return function (dispatch){
+        fetch(`http://localhost:3001/countries?continente=${continente}`)
+        .then((response)=>response.json())
+        .then((data)=> dispatch({type:SEARCH_COUNTRY,payload:data}))
+    }
+}
+
+
+export const searchActivity = (nombreActividad)=>{
+    return function (dispatch){
+        fetch(`http://localhost:3001/countries?actividad=${nombreActividad}`)
+        .then((response)=>response.json())
+        .then((data)=> dispatch({type:SEARCH_COUNTRY,payload:data}))
+    }
+}
+
+
 // Traer datos de pais por ID //////////////////////////////////
 
 export const getDetail = (id)=>{

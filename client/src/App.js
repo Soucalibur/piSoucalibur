@@ -11,11 +11,9 @@ function App() {
   return (
     <div className="App">
       
-      
+      <Route exact path="/" component={intro}  />
       <Route path="/home" component={nav} />
       <Route exact path= "/home" component= {home} />
-      <Route exact path="/" component={intro}  />
-      
       <Route path="/home/pais/:id" component={pais} />
       <Route path="/home/createActivity" component={activity} />
       <Route exact path="/enviado" component={enviado}/>

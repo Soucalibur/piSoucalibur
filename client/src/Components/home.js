@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {getCountries, searchCountry} from "../redux/actions"
+import {getCountries, searchCountry, searchCountryByContinent, searchActivity} from "../redux/actions"
 
 import img from "./css/img/Home_img/Continente.jpg"
 import "./css/home.css"
@@ -10,14 +10,16 @@ import "./css/home.css"
 
 const home = (props)=>{
 
-    // Hooks ///////////////////////////////////////////////////
+    // Hooks //////////////////////////////////////////////////
 
     const dispatch = useDispatch();
     const paises = useSelector((state)=>state.country)
 
-    ////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     
-    // Estados locales /////////////////////////////////////////
+    // Estados locales ////////////////////////////////////////
+
+    //const [cargado, setCargado] = useState(0)// Para cargar solo 1 vez las actividades y no actualizarse
 
     const [input,setInput]=useState("")         // Para el buscador
     const [filtro,setFiltro] = useState("")     // Para el filtro
@@ -26,16 +28,18 @@ const home = (props)=>{
         ultimoElemento:9,
     })
     const [pagActual,setPagActual] = useState(1)// Para el paginado (numero pagina actual)
-    
+    const [accion,setAccion]= useState([])
+
     ////////////////////////////////////////////////////////////
 
     // Ciclo de vida ///////////////////////////////////////////
 
-    useEffect( ()=>{
+    useEffect(()=>{
+        
         dispatch(getCountries())
         
     },[dispatch])
-
+    
     ////////////////////////////////////////////////////////////
 
     // Búsqueda ////////////////////////////////////////////////
@@ -45,11 +49,7 @@ const home = (props)=>{
         
         dispatch(searchCountry(input))
         setInput("")
-        setPagActual(1);
-        setValor({
-            primerElemento:0,
-            ultimoElemento:9
-        })
+        primeraPagina()
    
     }
 
@@ -62,28 +62,54 @@ const home = (props)=>{
 
     // Filtros /////////////////////////////////////////////////
 
-    const filtrarPoblacionMenor = (event)=>{
-        event.preventDefault();
-        setFiltro("menorPoblacion")
+    const elegirFiltro = (event)=>{
+        event.preventDefault()
+        const value = event.target.value;
+        setFiltro(value)
+        // if(value === "sinFiltro"){
+        //     dispatch(getCountries())
+        // }
     }
-    const filtrarPoblacionMayor = (event)=>{
-        event.preventDefault();
-        setFiltro("mayorPoblacion")
-    }
-    const filtrarInverso = (event)=>{
-        event.preventDefault();
-        setFiltro("inverso")
-    }
-    const filtrarAlfabetico= (event)=>{
-        event.preventDefault();
-        setFiltro("alfabetico")
-    }
-    const filtrarContinente = (event)=>{
-        event.preventDefault();
-        setFiltro("continente")
-    }
-    ////////////////////////////////////////////////////////////
     
+    const filtrarPorContinente = (event)=>{
+        event.preventDefault();
+        dispatch(searchCountryByContinent(event.target.value))
+        primeraPagina()
+    }
+    
+    // Filtrado de actividades ////////////////////////////////
+    
+    const obtenerActividades = (event)=>{
+        
+        //if(cargado === 0){
+            const paisesConActividad = paises.filter((pais)=> pais.Activities.length>0) // Array de paises que posean actividades 
+            const actividadGuardada = paisesConActividad.map((pais)=>pais.Activities)   // Array de actividades
+        
+            var actividadesSinRepetir = []
+            actividadGuardada.map((elemento)=> {                                        // Array de nombres de actividades no repetidas
+               
+                elemento.map((subElemento)=>{
+                    
+                    if(!actividadesSinRepetir.includes(subElemento.name))
+                    actividadesSinRepetir.push(subElemento.name)
+                })
+            })
+            setAccion(actividadesSinRepetir)                                            // Introducir ultimo array en estado local
+            //setCargado(1)                                                            // Para cargar solo 1 vez las actividades
+        //}
+                                                   
+    }
+    //paises.length && obtenerActividades()                                               // Llamado de la funcion solo cuando se obtengan los paises
+
+    const filtrarActividad = (event)=>{
+        event.preventDefault();
+        dispatch(searchActivity(event.target.value))
+        primeraPagina()
+
+    }
+    
+    ////////////////////////////////////////////////////////////
+
     // Paginado ////////////////////////////////////////////////
 
     const nextPage = (event)=>{
@@ -115,57 +141,92 @@ const home = (props)=>{
         }
     
     }
+
+    const primeraPagina = (event)=>{
+        setPagActual(1);
+        setValor({
+            primerElemento:0,
+            ultimoElemento:9
+        })
+    }
+
     ///////////////////////////////////////////////////////////
     
     // Renderizado ////////////////////////////////////////////
 
-    if(!paises.length){
-        return(
-        <div>
-            <p>CARGANDOOOOOOOO...</p>
-        </div>
-        )
-          
-    }else{
         return (
+            
             <div className="contenedorGrid">
                 
                 <div className="contenedorFiltros">
-                    
+                    <h4 id="filtroBusqueda">Búsqueda</h4>
+                    <h4 id="filtroOrdenamiento">Filtros de ordenamiento</h4>
                     {/* ///////////////// Busqueda //////////////////////// */}
                     <div id="navegador">
-                        <form onSubmit={(e)=>buscar(e)}> 
+                        <div>
+                            <form onSubmit={(e)=>buscar(e)}> 
+                                    
+                                    <input placeholder="Buscar país..." autoComplete="off" value={input} onChange={cambiarInput} id="input"></input>
+                                    <button type="submit" className="boton">Search</button>
+                                    
+                            </form>
+                        </div>
+
+                        <div>
+                            <select onChange={filtrarPorContinente} className="opcion">
+                                <option className="opciones" value="">Filtrar por continente...</option>
+                                <option className="opciones">Africa</option>
+                                <option className="opciones">Americas</option>
+                                <option className="opciones">Antarctic</option>
+                                <option className="opciones">Asia</option>
+                                <option className="opciones">Europe</option>
+                                <option className="opciones">Oceania</option>
                                 
-                                <input placeholder="Buscar país..." autoComplete="off" value={input} onChange={cambiarInput} id="input"></input>
-                                <button type="submit" className="boton">Search</button>
+                            </select>
+                        </div>
+
+                        <div>
+                            <select onChange={filtrarActividad} onClick={obtenerActividades} className="opcion">
                                 
-                        </form>
+                                <option className="opciones"  value="">Filtrar por actividad...</option>
+                                
+                                {accion.sort((a,b)=>{
+                                    if(a > b){
+                                        return 1;
+                                    }
+                                    if(a < b){
+                                        return -1
+                                    }
+                                    }).map((actividad)=>{
+                                        
+                                        
+                                        return(
+                                            
+                                            <option className="opciones" key={actividad} >{actividad}</option>    
+                                        )
+                                        
+                                    })
+                                }
+                            </select>
+                        </div>
                     </div>
                     {/* ///////////////// Busqueda //////////////////////// */}
 
                     {/* ///////////////// Filtros ///////////////////////// */}
                     <div id="filtros">
+                        
+                        <select onChange={elegirFiltro} className="opcion">
 
-                        <form onSubmit={(e)=>filtrarPoblacionMenor(e)}>
-                            <button type="submit" className="boton">Menor Población</button>
-                        </form>
-                    
-                        <form onSubmit={(e)=>filtrarPoblacionMayor(e)}>
-                            <button type="submit" className="boton">Mayor Población</button>
-                        </form>
-                    
-                        <form onSubmit={(e)=>filtrarInverso(e)}>
-                            <button type="submit" className="boton">Alfabético Inverso</button>
-                        </form>
-                    
-                        <form onSubmit={(e)=>filtrarAlfabetico(e)}>
-                            <button type="submit" className="boton">Alfabético</button>
-                        </form>
-                    
-                    
-                        <form onSubmit={(e)=>filtrarContinente(e)}>
-                            <button type="submit" className="boton">Continente</button>
-                        </form>
+                            <option className="opciones" value=""> Seleccionar filtro...</option>
+                            <option className="opciones" value="alfabetico">Alfabético</option>
+                            <option className="opciones" value="inverso">Alfabético Inverso</option>
+                            <option className="opciones" value="menorPoblacion">Menor Población</option>
+                            <option className="opciones" value="mayorPoblacion">Mayor Población</option>
+                            {/* <option className="opciones"  value="sinFiltro" >Sin filtro</option> */}
+                        </select>
+                        
+
+                        
 
                     </div>
                     {/* ///////////////// Filtros ///////////////////////// */}
@@ -191,7 +252,7 @@ const home = (props)=>{
                 <div className="contenedor">
                     
                     {/* ///////////////// Paises ////////////////////////// */}
-                    {Array.isArray(paises)? paises.sort((a,b)=>{
+                    {paises.length? paises.sort((a,b)=>{
                         if(filtro === "menorPoblacion"){
                             if(a.poblacion > b.poblacion){
                                 return 1;
@@ -225,15 +286,6 @@ const home = (props)=>{
                                 return -1
                             }
                         };
-                        if(filtro==="continente"){
-                            if(a.continente > b.continente){
-                                return 1
-                            }
-                            if(a.continente < b.continente){
-                                return -1
-                            }
-                        };
-
                        
                     }).slice(valor.primerElemento,valor.ultimoElemento).map((pais)=>{
                      return(
@@ -267,9 +319,7 @@ const home = (props)=>{
             </div>
         )
     }
-    
-    
-}
+
 
     ////////////////////////////////////////////////////////////
 

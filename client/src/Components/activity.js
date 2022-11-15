@@ -66,7 +66,7 @@ const activity = (props)=>{
         name: "",
         dificult: 1,
         duration: "",
-        season: "",
+        season: "Otoño",
         CountryId:[]
     })
 
@@ -74,7 +74,7 @@ const activity = (props)=>{
         name: "",
         dificult: "",
         duration: "",
-        season: "",
+        season: "Otoño",
         CountryId:[]
     })
 
@@ -92,7 +92,7 @@ const activity = (props)=>{
 
     useEffect(()=>{
         dispatch(getCountries())
-    })
+    },[])
     
     //////////////////////////////////////////////////////////
 
@@ -125,9 +125,9 @@ const activity = (props)=>{
     const seleccionar =async(event)=>{
         event.preventDefault()
         const paisId = event.target.value.split(": ")[1];
+        console.log(paisId)
         
-        
-        if (!datos.CountryId.includes(paisId)){
+        if (!datos.CountryId.includes(paisId) && paisId !== undefined){
             setDatos({...datos,CountryId: [...datos.CountryId, paisId]})
             
             setError(validar({...datos,CountryId:event.target.value}))
@@ -147,7 +147,13 @@ const activity = (props)=>{
 
     //////////////////////////////////////////////////////////
     
-
+    if(!paises.length){
+        return(
+            <div>
+                <h3>CARGANDO...</h3>
+            </div>
+        )
+    }
     return(
 
         <div className="contenedorActividad">
@@ -182,8 +188,13 @@ const activity = (props)=>{
                     </div>
 
                     <div>
-                        <label htmlFor="season">Temporada </label>
-                        <input placeholder="otoño,invierno,primavera,verano" name="season" value={datos.season} onChange={introducirDatos}  autoComplete="off" className="input"></input>
+                        <label>Temporada </label>
+                        <select  name="season" value={datos.season} onChange={introducirDatos} className="input">
+                            <option>Otoño</option>
+                            <option>Invierno</option>
+                            <option>Primavera</option>
+                            <option>Verano</option>
+                        </select>
                     </div>
                     
                     <div>
@@ -200,9 +211,9 @@ const activity = (props)=>{
 
                     {/*  /////////////////// Lista Paises/ID ///////////////////// */}
                     <div>
-                        <p>Seleccione su PaisID aquí</p>
 
                         <select onChange={seleccionar} className="input">
+                            <option value="" >Seleccione su PaisId aquí:</option>
                             {paises.sort((a,b)=>{
                                 if(a.name > b.name){
                                     return 1;

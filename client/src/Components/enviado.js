@@ -19,7 +19,7 @@ const enviado = ()=>{
                 
                 <p className="enviado">ENVIADO</p>
                 
-                <div className="opciones">
+                <div className="opcionesEnviado">
                     
                     {/*  /////////////////// Link Crear Actividad ///////////////////// */}
                     <Link to="/home/createActivity">   

@@ -1,16 +1,15 @@
 .contenedorPaisId{
-    display:inline-flex;
+    display:grid;
     grid-template-columns: repeat(12,1fr);
-    grid-auto-rows: 30px;
+    grid-template-rows: repeat(26,30px);
 
     padding-top: 10px;
     margin-bottom: 10px;
     align-items: center;
     
-    flex-direction: column;
-    background-color: rgba(240, 255, 255, 0.753);
+    background-color: rgba(240, 255, 255, 0.568);
     height: 100%;
-    width: 80%;
+    width: 100%;
 }
 
 .imgFondoPais{
@@ -22,4 +21,66 @@
     position:fixed;
     top: 0
 }
+
+#nombrePais{
+    grid-column: 1/13;
+    grid-row: 2/3;
+}
+.imgPais{
+    grid-column: 3/11;
+    grid-row: 4/14;
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    
+}
+
+.containerCountry{
+    grid-column: 1/13;
+    grid-row: 15/20;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: 30px;
+    align-items: center;
+    
+    gap: 30px;
+    
+}
+
+.containerActivities{
+    grid-column: 1/13;
+    grid-row: 21;
+    
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: 30px;
+    
+}
+
+#act{
+    grid-column: 1/4;
+    grid-row:1 ;
+}
+
+#containerSelectionAct{
+    grid-column: 2;
+    align-self: center;
+}
+
+#containerEspecifications{
+    grid-column: 1/4;
+    grid-row: 3/4;
+
+}
+
+#especifications{
+    
+    display: inline-flex;
+    justify-content: space-around;
+    width: 60%;
+    
+}
+
 
