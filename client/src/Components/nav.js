@@ -45,6 +45,7 @@ const nav = (props)=>{
                 </Link>
             </div>
             {/* //////////////// Link Nueva Actividad ////////////////////// */}
+
            
         </div>
     )

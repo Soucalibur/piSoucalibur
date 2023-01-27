@@ -159,8 +159,8 @@ const home = (props)=>{
             <div className="contenedorGrid">
                 
                 <div className="contenedorFiltros">
-                    <h4 id="filtroBusqueda">Búsqueda</h4>
-                    <h4 id="filtroOrdenamiento">Filtros de ordenamiento</h4>
+                    <h4 id="filtroBusqueda">Filtros de Búsqueda</h4>
+                    <h4 id="filtroOrdenamiento">Filtros de Ordenamiento</h4>
                     {/* ///////////////// Busqueda //////////////////////// */}
                     <div id="navegador">
                         <div>

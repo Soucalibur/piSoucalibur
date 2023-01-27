@@ -1,27 +1,18 @@
 .contenedorNav{
-    display: inline-flex;
+    display: flex;
     
     justify-content: space-around;
     width: 100%;
     height: 60px;
     align-items: center;
-    
+    background-color: rgba(69, 159, 212, 0.884);
     color: antiquewhite;
     font-family:'Times New Roman', Times, serif;
-    background-image: url("./img/Nav_img/fondo.jpg");
-    background-size:auto;
-    background-position: 0;
     position: sticky;
     top: 0;
     
 }
 
-.imgNav{
-    object-fit: contain;
-    height: 10%;
-    width: 20px;
-    z-index: 0;
-}
 .nombreAplicacion{
     z-index: 1;
     font-size: 3vw;
